@@ -1,0 +1,11 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {PATH,legal,advance,coordinate} from '../lib/engine.mjs';
+const fresh=()=>Array.from({length:4},()=>[-1,-1,-1,-1]);
+test('52 unique cells forming a contiguous circuit',()=>{assert.equal(new Set(PATH.map(String)).size,52);PATH.forEach(([r,c],i)=>{const [r2,c2]=PATH[(i+1)%52];assert.ok(Math.abs(r-r2)<=1&&Math.abs(c-c2)<=1)});});
+test('six required to leave base',()=>{assert.deepEqual(legal(fresh(),0,5),[]);assert.equal(legal(fresh(),0,6).length,4);assert.equal(advance(fresh(),0,0,6).tokens[0][0],0)});
+test('exact finish, no overshoot, and winner',()=>{const t=fresh();t[0]=[56,56,56,54];assert.deepEqual(legal(t,0,3),[]);const r=advance(t,0,3,2);assert.equal(r.winner,true);assert.equal(r.finished,true)});
+test('capture on shared circuit',()=>{const t=fresh();t[0][0]=13;t[1][0]=1;const r=advance(t,0,0,1);assert.equal(r.tokens[1][0],-1);assert.equal(r.captured,1);assert.equal(t[1][0],1)});
+test('stars are safe and home lanes are private',()=>{const t=fresh();t[0][0]=12;t[1][0]=0;assert.equal(advance(t,0,0,1).captured,0);t[0][0]=50;t[1][0]=51;assert.equal(advance(t,0,0,1).captured,0)});
+test('all colours enter their own contiguous home lane',()=>{for(let c=0;c<4;c++){for(let p=0;p<56;p++){const a=coordinate(c,p,0),b=coordinate(c,p+1,0);assert.ok(Math.abs(a[0]-b[0])<=1&&Math.abs(a[1]-b[1])<=1)}}});
+test('complete four-player match reaches victory without invalid positions',()=>{let t=fresh(),turn=0,seed=42,won=false,sixes=0;for(let k=0;k<20000&&!won;k++){seed=(Math.imul(seed,1664525)+1013904223)>>>0;const d=1+seed%6;sixes=d===6?sixes+1:0;const choices=legal(t,turn,d);if(sixes<3&&choices.length){const r=advance(t,turn,choices[0],d);t=r.tokens;won=r.winner;assert.ok(t.flat().every(p=>p>=-1&&p<=56));if(d===6||r.captured||r.finished)continue;}turn=(turn+1)%4;sixes=0;}assert.equal(won,true)});
