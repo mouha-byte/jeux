@@ -1,0 +1,45 @@
+/* Six real CSS faces, rotated in perspective while the original roll sound plays. */
+.die-scene{--die-size:56px;display:block;position:relative;width:var(--die-size);height:var(--die-size);perspective:300px;flex:none}
+.die-scene>.die{width:100%;height:100%}
+.die-scene.is-rolling>.die{visibility:hidden;animation:none}
+.rolling-cube{position:absolute;inset:0;transform-style:preserve-3d;animation:cube-tumble var(--roll-ms,440ms) cubic-bezier(.18,.6,.4,1) both;will-change:transform}
+.cube-face{position:absolute;inset:0;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:5px;padding:11px;border:1px solid #616161;border-radius:9px;background:linear-gradient(135deg,#fff,#dfdfdf 60%,#aaa);box-shadow:inset 0 1px 2px white;backface-visibility:hidden}
+.cube-face .pip{border-radius:50%;background:#050505;box-shadow:inset 0 1px 2px #666}
+.face-0{transform:translateZ(calc(var(--die-size)/2))}.face-1{transform:rotateY(180deg) translateZ(calc(var(--die-size)/2))}.face-2{transform:rotateY(90deg) translateZ(calc(var(--die-size)/2))}.face-3{transform:rotateY(-90deg) translateZ(calc(var(--die-size)/2))}.face-4{transform:rotateX(90deg) translateZ(calc(var(--die-size)/2))}.face-5{transform:rotateX(-90deg) translateZ(calc(var(--die-size)/2))}
+.die-scene:not(.is-rolling)>.die{animation:die-settle 180ms ease-out}
+.logo-pieces>.die-scene{--die-size:77px;transform:rotate(17deg)}
+.logo-pieces>.die-scene>.die{box-shadow:5px 7px 0 #97999c,8px 13px 10px #0005}
+@keyframes cube-tumble{0%{transform:translateY(0) rotateX(-20deg) rotateY(-25deg) rotateZ(0) scale(.73)}25%{transform:translateY(-13px) rotateX(110deg) rotateY(150deg) rotateZ(-18deg) scale(.8)}65%{transform:translateY(-7px) rotateX(270deg) rotateY(310deg) rotateZ(16deg) scale(.82)}100%{transform:translateY(0) rotateX(360deg) rotateY(360deg) rotateZ(0) scale(.8)}}
+@keyframes die-settle{0%{transform:translateY(-3px) scale(1.06,.92)}55%{transform:translateY(1px) scale(.96,1.04)}100%{transform:none}}
+
+/* Board position and the jumping visual use separate transforms. Each square is a complete hop. */
+.pawn-visual{display:block;position:relative;width:100%;height:100%;transform-origin:50% 88%}
+.pawn-shadow{position:absolute;left:19%;right:19%;bottom:6%;height:15%;border-radius:50%;background:#0005;filter:blur(1px);opacity:0}
+.board-pin.is-hopping{transition:left var(--step-ms) linear,top var(--step-ms) linear;animation:none;filter:drop-shadow(1px 2px 1px #0007)}
+.is-hopping .pawn-visual{animation:pawn-hop var(--step-ms) ease-in-out both}
+.is-hopping .pawn-shadow{opacity:1;animation:hop-shadow var(--step-ms) ease-in-out infinite}
+@keyframes pawn-hop{0%{transform:translateY(0) scale(1.06,.91)}38%{transform:translateY(-35%) scale(.94,1.06) rotate(-5deg)}65%{transform:translateY(-24%) scale(.97,1.04) rotate(4deg)}88%{transform:translateY(2%) scale(1.13,.85)}100%{transform:none}}
+@keyframes hop-shadow{0%,100%{transform:scale(1);opacity:.6}45%{transform:scale(.6);opacity:.2}}
+
+/* Impact first; only then does the captured piece travel back to its own base. */
+.board-pin.capture-hit{transition:none;filter:drop-shadow(0 0 6px var(--prox-gold))}
+.capture-hit .pawn-visual{animation:capture-hit var(--capture-ms) ease-out both}
+.board-pin.capture-return{transition:left var(--capture-ms) cubic-bezier(.35,0,.5,1),top var(--capture-ms) cubic-bezier(.35,0,.5,1);filter:drop-shadow(0 4px 3px #0006)}
+.capture-return .pawn-visual{animation:capture-flight var(--capture-ms) ease-in-out both}
+.capture-effect{position:absolute;z-index:50;width:1px;height:1px;pointer-events:none}
+.impact-ring{position:absolute;width:60px;height:60px;left:-30px;top:-30px;border:4px solid var(--prox-gold-light);border-radius:50%;box-shadow:0 0 12px var(--prox-gold-deep),inset 0 0 12px var(--prox-gold);animation:impact-ring .55s ease-out both}
+.capture-effect>i{position:absolute;left:-3px;top:-3px;width:7px;height:7px;background:var(--prox-gold);border-radius:2px;box-shadow:0 0 5px var(--prox-gold-deep);animation:capture-spark .5s ease-out both;transform:rotate(var(--angle))}
+.capture-effect>b{position:absolute;left:50%;top:-38px;white-space:nowrap;font-family:'Bangers';font-size:27px;color:var(--prox-gold-light);-webkit-text-stroke:2px var(--prox-background);paint-order:stroke fill;animation:capture-label .65s ease-out both}
+.capture-effect.return{opacity:.45}.capture-effect.return>i{display:none}
+@keyframes capture-hit{0%{transform:scale(1)}25%{transform:translateX(-15%) rotate(-18deg) scale(1.15)}55%{transform:translateX(13%) rotate(15deg)}100%{transform:rotate(-8deg) scale(.88)}}
+@keyframes capture-flight{0%{transform:scale(.88) rotate(-8deg)}40%{transform:translateY(-100%) scale(.65) rotate(170deg);opacity:.8}75%{transform:translateY(-50%) scale(.8) rotate(320deg)}90%{transform:translateY(0) scale(1.12,.85) rotate(360deg)}100%{transform:scale(1) rotate(360deg);opacity:1}}
+@keyframes impact-ring{0%{transform:scale(.15);opacity:1}100%{transform:scale(1.7);opacity:0}}
+@keyframes capture-spark{0%{transform:rotate(var(--angle)) translateX(8px) scale(1.4);opacity:1}100%{transform:rotate(var(--angle)) translateX(60px) scale(0);opacity:0}}
+@keyframes capture-label{0%{transform:translate(-50%,0) scale(.7);opacity:0}30%{transform:translate(-50%,-7px) scale(1.1);opacity:1}100%{transform:translate(-50%,-25px) scale(1);opacity:0}}
+@media(max-width:430px){.die-scene{--die-size:46px}.cube-face{padding:9px;gap:4px;border-radius:8px}.logo-pieces>.die-scene{--die-size:64px}.capture-effect>b{font-size:23px}}
+@media(prefers-reduced-motion:reduce){.rolling-cube{display:none}.die-scene.is-rolling>.die{visibility:visible}.board-pin.is-hopping,.board-pin.capture-return{transition:none}.pawn-visual,.pawn-shadow,.impact-ring,.capture-effect>i,.capture-effect>b,.die-scene>.die{animation:none!important}.capture-effect>i{display:none}.capture-effect>b{transform:translateX(-50%)}.impact-ring{opacity:.5}}
+
+/* Decorative and opposing pawns must never intercept a playable pawn tap. */
+.board-pin:disabled,.board-pin>*{pointer-events:none}
+.board-pin.selectable{pointer-events:auto;touch-action:manipulation}
+.board-pin.stacked{width:5.4%;height:7.56%}

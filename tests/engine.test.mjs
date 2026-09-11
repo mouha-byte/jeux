@@ -1,7 +1,10 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {PATH,legal,advance,coordinate} from '../lib/engine.mjs';
+import {PATH,legal,advance,coordinate,automaticPawn} from '../lib/engine.mjs';
 const fresh=()=>Array.from({length:4},()=>[-1,-1,-1,-1]);
+test('rolls 1–5 automatically select the only movable pawn already out',()=>{const t=fresh();t[3][2]=12;for(let d=1;d<6;d++)assert.equal(automaticPawn(t,3,d),2);assert.equal(automaticPawn(t,3,6),null)});
+test('multiple legal moves and no legal moves require no automatic selection',()=>{const t=fresh();assert.equal(automaticPawn(t,0,3),null);t[0]=[0,10,-1,-1];assert.equal(automaticPawn(t,0,3),null);t[0]=[56,55,-1,-1];assert.equal(automaticPawn(t,0,2),null);assert.equal(automaticPawn(t,0,1),1)});
+test('automatic selection ignores a pawn that would overshoot home',()=>{const t=fresh();t[0]=[55,20,56,-1];assert.equal(automaticPawn(t,0,3),1)});
 test('52 unique cells forming a contiguous circuit',()=>{assert.equal(new Set(PATH.map(String)).size,52);PATH.forEach(([r,c],i)=>{const [r2,c2]=PATH[(i+1)%52];assert.ok(Math.abs(r-r2)<=1&&Math.abs(c-c2)<=1)});});
 test('six required to leave base',()=>{assert.deepEqual(legal(fresh(),0,5),[]);assert.equal(legal(fresh(),0,6).length,4);assert.equal(advance(fresh(),0,0,6).tokens[0][0],0)});
 test('exact finish, no overshoot, and winner',()=>{const t=fresh();t[0]=[56,56,56,54];assert.deepEqual(legal(t,0,3),[]);const r=advance(t,0,3,2);assert.equal(r.winner,true);assert.equal(r.finished,true)});

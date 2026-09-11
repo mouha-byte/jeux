@@ -1,3 +1,3 @@
-import './globals.css';
-export const metadata = { title: 'Ludo Royal — À vous de jouer', description: 'Un jeu de Ludo avec vos amis ou contre des adversaires virtuels.' };
+import './base.css';
+export const metadata = { title: 'ProxPlay — Ludo, Échecs, X O, Billard & UNO', description: 'Votre collection de jeux classiques : Ludo, échecs, morpion infini, billard et UNO, entre amis ou contre l’ordinateur.', icons: {icon:'/icon.svg'} };
 export default function Layout({children}:{children:React.ReactNode}) { return <html lang="fr"><body>{children}</body></html> }

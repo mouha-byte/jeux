@@ -1,0 +1,10 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import crypto from 'node:crypto';
+import {advance,coordinate} from '../lib/engine.mjs';
+import {capturedPieces,motionTiming} from '../lib/motion.mjs';
+test('capture animation identifies every victim and its own return point',()=>{const tokens=[[13,-1,-1,-1],[1,1,-1,-1],[-1,-1,-1,-1],[-1,-1,-1,-1]];const result=advance(tokens,0,0,1);const victims=capturedPieces(tokens,result,0);assert.equal(victims.length,2);assert.deepEqual(victims[0].from,coordinate(1,1,0));assert.deepEqual(victims[1].to,coordinate(1,-1,1));assert.deepEqual(tokens[1],[1,1,-1,-1]);});
+test('safe squares never trigger a capture animation',()=>{const tokens=[[12,-1,-1,-1],[0,-1,-1,-1],[-1,-1,-1,-1],[-1,-1,-1,-1]];assert.deepEqual(capturedPieces(tokens,advance(tokens,0,0,1),0),[])});
+test('fast motion still has distinct impact and return phases',()=>{const fast=motionTiming(true),normal=motionTiming(false);for(const key of Object.keys(normal))assert.ok(fast[key]>0&&fast[key]<normal[key]);assert.ok(normal.return>normal.impact)});
+test('audio files match the original downloaded samples byte for byte',()=>{const manifest=JSON.parse(fs.readFileSync(new URL('../public/audio/sources.json',import.meta.url)));assert.equal(manifest.assets.length,8);for(const asset of manifest.assets){const bytes=fs.readFileSync(new URL('../public/audio/'+asset.file,import.meta.url));assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),asset.sha256);assert.ok(asset.source.startsWith('https://ludoking.com/play/assets/main/native/'));}});

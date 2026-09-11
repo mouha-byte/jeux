@@ -1,0 +1,9 @@
+.git
+.next
+.openai
+.sites-runtime
+node_modules
+out
+AGENTS.md
+CLAUDE.md
+.env*
