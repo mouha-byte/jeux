@@ -1,6 +1,6 @@
 # ProxPlay — collection de jeux
 
-Un dépôt Next.js avec cinq jeux indépendants : Ludo Classic, Échecs, X O infini, Billard 8 et UNO. Interface française, adaptée aux téléphones et ordinateurs. Aucun meme, clip ou son de meme.
+Un dépôt Next.js avec six jeux indépendants : Ludo Classic, Échecs, X O infini, Billard 8, UNO et Pierre Feuille Ciseaux. Interface française, adaptée aux téléphones et ordinateurs. Aucun meme, clip ou son de meme.
 
 ## Démarrage
 
@@ -17,8 +17,9 @@ npm run dev
 - `/xo` : morpion infini, trois signes maximum par joueur, contre un bot ou à deux.
 - `/pool` : billard à huit boules, contre un bot ou à deux sur le même appareil.
 - `/uno` : UNO contre un ou trois bots, avec cartes spéciales.
+- `/rps` : pierre-feuille-ciseaux contre un bot, en trois points gagnants.
 
-`npm test` vérifie les règles des cinq jeux, les collisions du billard et le worker d’échecs. `npm run build` produit le site statique dans `out/`. Le projet est lié à Vercel ; publier depuis ce dossier avec `npx vercel deploy --prod --yes --scope mouhanned7s-projects`.
+`npm test` vérifie les règles des six jeux, les collisions du billard et le worker d’échecs. `npm run build` produit le site statique dans `out/`. Le projet est lié à Vercel ; publier depuis ce dossier avec `npx vercel deploy --prod --yes --scope mouhanned7s-projects`.
 
 Les parties restent en mémoire ; recharger ou quitter un jeu termine la partie. Aucun multijoueur réseau ni compte utilisateur.
 
@@ -88,11 +89,11 @@ Règles de billard occasionnel : table ouverte après la casse ; pleines/rayées
 
 ## Mobile
 
-Accueil à cinq jeux en grille de deux colonnes sur mobile, grandes commandes, marges de sécurité du téléphone, plateaux adaptés aux écrans courts, disposition paysage pour le billard. Les plateaux d’échecs gardent leurs cases sélectionnables, et les pions Ludo superposés restent accessibles.
+Accueil à six jeux en grille de deux colonnes sur mobile, grandes commandes, marges de sécurité du téléphone, plateaux adaptés aux écrans courts, disposition paysage pour le billard. Les plateaux d’échecs gardent leurs cases sélectionnables, et les pions Ludo superposés restent accessibles.
 
 ## Validation
 
-49 tests passent : règles Ludo, sélection des pions, worker et règles d’échecs, moteur classique et infini du X/O, physique et règles du billard. Tests UNO : cartes spéciales, pioche, annonces, pénalités, recyclage et 24 parties complètes. Tests audio : profils distincts, sourdine, fermeture et absence d’imports Ludo dans les autres jeux. Compilation statique Next.js pour les six routes. Les tests d’invincibilité concernent seulement l’ancien moteur de morpion classique ; le bot infini utilise une recherche différente.
+52 tests passent : règles Ludo, sélection des pions, worker et règles d’échecs, moteur classique et infini du X/O, physique et règles du billard. Tests UNO : cartes spéciales, pioche, annonces, pénalités, recyclage et 24 parties complètes. Tests audio : profils distincts, sourdine, fermeture et absence d’imports Ludo dans les autres jeux. Compilation statique Next.js pour les sept routes. Les tests d’invincibilité concernent seulement l’ancien moteur de morpion classique ; le bot infini utilise une recherche différente.
 
 
 ## UNO
@@ -107,3 +108,7 @@ Base de règles vérifiée dans les [règles Mattel](https://shop.mattel.com/pag
 
 Seul le Ludo utilise ses MP3 existants. Les échecs, le billard, le X/O et UNO utilisent `ContextAudio`, avec des enveloppes, filtres et timbres différents. UNO accompagne la distribution d’un mélange, les pioches d’un froissement et les poses d’un claquement de carte ; les actions et UNO ont leurs propres accents. Aucune musique ni son de meme ajouté. Aucun nouveau fichier média ni dépendance sonore. Les préférences de sourdine restent propres à chaque jeu et enregistrées sur cet appareil. L’audio démarre après une interaction, et le contexte est fermé en quittant la page.
 "# jeux" 
+
+## Pierre Feuille Ciseaux (/rps)
+
+Duel contre un bot aléatoire indépendant, premier à trois points ; les égalités ne donnent aucun point. Trois battements de poings puis révélation simultanée, mains SVG originales, impact et confettis CSS, sans nouvelle dépendance ni média. Rejouer réinitialise les scores. Un passage en arrière-plan annule une révélation en cours sans attribuer de point. Grandes commandes tactiles, clavier, règles en dialogue natif et réduction des animations selon la préférence système. Percussions de compte à rebours et sons de résultat dédiés, sourdine mémorisée. Tests des neuf confrontations, du tirage du bot et du score de fin de match.

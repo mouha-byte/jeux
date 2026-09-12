@@ -1,5 +1,5 @@
-type Profile='chess'|'pool'|'xo'|'cards';
-export type GameSound='click'|'start'|'move'|'capture'|'check'|'win'|'placeX'|'placeO'|'erase'|'cue'|'collision'|'cushion'|'pocket'|'foul'|'deal'|'draw'|'flip'|'shuffle'|'skip'|'reverse'|'color'|'uno';
+type Profile='chess'|'pool'|'xo'|'cards'|'rps';
+export type GameSound='click'|'start'|'move'|'capture'|'check'|'win'|'placeX'|'placeO'|'erase'|'cue'|'collision'|'cushion'|'pocket'|'foul'|'deal'|'draw'|'flip'|'shuffle'|'skip'|'reverse'|'color'|'uno'|'count';
 /** Small original foley made locally with Web Audio; no samples or network requests. */
 export class ContextAudio{
  private ctx:AudioContext|null=null;
@@ -35,7 +35,13 @@ export class ContextAudio{
  async play(event:GameSound,strength=1){
   if(!this.enabled||this.disposed)return;
   try{await this.unlock();if(!this.enabled||this.disposed)return;const v=Math.max(.1,Math.min(1,strength));
-   if(this.profile==='pool'){
+   if(this.profile==='rps'){
+    if(event==='count'){this.tone(180,.09,.23,0,'sine',70);this.rustle(.05,.12,1100)}
+    else if(event==='win'){this.rustle(.1,.17,2500);[523,784,1047,1319].forEach((n,i)=>this.tone(n,.19,.1,i*.085,'triangle'))}
+    else if(event==='foul'){this.rustle(.07,.14,1300);this.tone(330,.16,.1,0,'triangle',165);this.tone(147,.18,.07,.13)}
+    else if(event==='draw'){this.tone(440,.09,.11);this.tone(440,.09,.11,.12)}
+    else this.tone(880,.055,.1,0,'sine',620);
+   }else if(this.profile==='pool'){
     if(event==='cue'){this.rustle(.045,.25*v,1600);this.tone(540,.045,.22*v,0,'sine',220)}
     else if(event==='collision'){this.tone(1850,.023,.17*v);this.tone(2870,.013,.09*v);this.rustle(.014,.2*v,4600)}
     else if(event==='cushion'){this.tone(170,.06,.17*v,0,'sine',90);this.rustle(.03,.1*v,800)}
